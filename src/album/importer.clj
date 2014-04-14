@@ -1,5 +1,6 @@
 (ns album.importer
-  (:require [clj-time.format :as tf])
+  (:require [clj-time.format :as tf]
+            [me.raynes.fs :as fs])
   (:import [com.drew.imaging ImageMetadataReader]))
 
 (defn metadata
@@ -23,3 +24,23 @@
   (tf/parse (tf/formatter "yyyy:MM:dd HH:mm:ss")
             (get-in metadata ["Exif SubIFD" "Date/Time Original"])))
 
+(defn date-path
+  [basedir date]
+  (fs/file basedir
+           (str
+            (tf/unparse (tf/formatter "yyyy/MM/dd/yyyyMMdd_HHmmss")
+                        date)
+            ".jpeg")))
+
+(defn import!
+  "Move images from an inbox directory to a directory structure
+   based on the dates the images were taken"
+  [inbox-dir target-dir]
+  {:pre [(fs/readable? inbox-dir)]}
+  (doseq [sourcefile (fs/find-files inbox-dir #".*\.JPG")]
+    (let [targetfile (->> sourcefile
+                          metadata
+                          date-time-original
+                          (date-path target-dir))]
+      (fs/mkdirs (fs/parent targetfile))
+      (fs/rename sourcefile targetfile))))
