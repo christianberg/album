@@ -9,13 +9,13 @@
   {:pre [(instance? java.io.File file)]
    :post [(map? %)]}
   (let [metadata (ImageMetadataReader/readMetadata file)]
-    (apply merge
-           (for [dir (.getDirectories metadata)]
-             {(.getName dir)
-              (apply merge
-                     (for [tag (.getTags dir)]
-                       (let [tag-id (.getTagType tag)]
-                         {(.getTagName dir tag-id) (.getDescription tag)})))}))))
+    (into {}
+          (for [dir (.getDirectories metadata)]
+            [(.getName dir)
+             (into {}
+                   (for [tag (.getTags dir)]
+                     (let [tag-id (.getTagType tag)]
+                       [(.getTagName dir tag-id) (.getDescription tag)])))]))))
 
 (defn date-time-original
   [metadata]
