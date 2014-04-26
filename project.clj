@@ -3,7 +3,7 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.5.1"]
-                 [clj-time "0.6.0"]
-                 [me.raynes/fs "1.4.4"]
+  :dependencies [[org.clojure/clojure "1.6.0"]
+                 [clj-time "0.7.0"]
+                 [me.raynes/fs "1.4.5"]
                  [com.drewnoakes/metadata-extractor "2.6.2"]])
